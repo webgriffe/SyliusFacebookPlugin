@@ -9,7 +9,6 @@ use Setono\SyliusFacebookPlugin\Builder\ViewContentBuilder;
 use Setono\SyliusFacebookPlugin\Event\BuilderEvent;
 use Setono\SyliusFacebookPlugin\Tag\FbqTag;
 use Setono\SyliusFacebookPlugin\Tag\FbqTagInterface;
-use Setono\SyliusFacebookPlugin\Tag\Tags;
 use Setono\TagBag\Tag\TagInterface;
 use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Sylius\Component\Product\Model\ProductInterface;

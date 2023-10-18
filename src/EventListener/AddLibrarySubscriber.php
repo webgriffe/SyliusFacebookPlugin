@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusFacebookPlugin\EventListener;
 
-use Setono\SyliusFacebookPlugin\Tag\Tags;
 use Setono\TagBag\Tag\TagInterface;
 use Setono\TagBag\Tag\TemplateTag;
-use Setono\TagBag\Tag\TwigTag;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
