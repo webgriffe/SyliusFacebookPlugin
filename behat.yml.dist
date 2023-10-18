@@ -2,16 +2,13 @@ imports:
     - tests/Behat/Resources/suites.yml
 
 default:
-    formatters:
-        pretty:
-            verbose: true
-            paths: false
-            snippets: false
-
+    gherkin:
+        filters:
+            tags: "~@todo"
     extensions:
         DMore\ChromeExtension\Behat\ServiceContainer\ChromeExtension: ~
 
-        Lakion\Behat\MinkDebugExtension:
+        FriendsOfBehat\MinkDebugExtension:
             directory: etc/build
             clean_start: false
             screenshot: true
@@ -42,11 +39,7 @@ default:
                                     - "start-maximized"
                                     - "no-sandbox"
                             extra_capabilities:
-                                acceptSslCerts: true
-                                acceptInsecureCerts: true
                                 unexpectedAlertBehaviour: accept
-                                goog:chromeOptions:
-                                    w3c: false # https://github.com/Sylius/Sylius/issues/10561
                 firefox:
                     selenium2:
                         browser: firefox
@@ -62,7 +55,3 @@ default:
         FriendsOfBehat\SuiteSettingsExtension:
             paths:
                 - "features"
-
-    gherkin:
-        filters:
-            tags: "~@todo && ~@cli" # CLI is excluded as it registers an error handler that mutes fatal errors
