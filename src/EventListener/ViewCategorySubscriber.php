@@ -77,7 +77,7 @@ final class ViewCategorySubscriber extends TagSubscriber
             $taxon = $this->taxonRepository->findOneBySlug($slug, $this->localeContext->getLocaleCode());
 
             if (null !== $taxon) {
-                $builder->setContentName($taxon->getName());
+                $builder->setContentName((string) $taxon->getName());
                 $builder->setContentCategory($this->getContentCategory($taxon));
             }
         }
@@ -89,10 +89,9 @@ final class ViewCategorySubscriber extends TagSubscriber
 
         $this->eventDispatcher->dispatch(new BuilderEvent($builder, $gridView));
 
-        $this->tagBag->addTag(
+        $this->tagBag->add(
             (new FbqTag('ViewCategory', $builder, 'trackCustom'))
-                ->setSection(TagInterface::SECTION_BODY_END)
-                ->setName(Tags::TAG_VIEW_CATEGORY)
+                ->withSection(TagInterface::SECTION_BODY_END)
         );
     }
 
@@ -113,8 +112,9 @@ final class ViewCategorySubscriber extends TagSubscriber
     {
         $ids = [];
 
-        /** @var ProductInterface $product */
-        foreach ($gridView->getData() as $idx => $product) {
+        /** @var ProductInterface[] $data */
+        $data = $gridView->getData();
+        foreach ($data as $idx => $product) {
             if ($idx >= $max) {
                 break;
             }

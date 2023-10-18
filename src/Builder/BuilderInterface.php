@@ -10,9 +10,9 @@ interface BuilderInterface
 
     public const CONTENT_TYPE_PRODUCT_GROUP = 'product_group';
 
-    public static function create();
+    public static function create(): static;
 
-    public static function createFromJson(string $json);
+    public static function createFromJson(string $json): static;
 
     public function getData(): array;
 

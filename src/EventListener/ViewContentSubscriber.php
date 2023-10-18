@@ -37,7 +37,7 @@ final class ViewContentSubscriber extends TagSubscriber
         }
 
         $builder = ViewContentBuilder::create()
-            ->setContentName($product->getName())
+            ->setContentName((string) $product->getName())
             ->setContentType(ViewContentBuilder::CONTENT_TYPE_PRODUCT)
             ->addContentId($product->getCode())
         ;
@@ -53,10 +53,9 @@ final class ViewContentSubscriber extends TagSubscriber
 
         $this->eventDispatcher->dispatch(new BuilderEvent($builder, $product));
 
-        $this->tagBag->addTag(
+        $this->tagBag->add(
             (new FbqTag(FbqTagInterface::EVENT_VIEW_CONTENT, $builder))
-                ->setSection(TagInterface::SECTION_BODY_END)
-                ->setName(Tags::TAG_VIEW_CONTENT)
+                ->withSection(TagInterface::SECTION_BODY_END)
         );
     }
 }

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Setono\SyliusFacebookPlugin\Tag;
 
 use Setono\SyliusFacebookPlugin\Builder\BuilderInterface;
-use Setono\TagBag\Tag\TwigTag;
+use Setono\TagBag\Tag\Tag;
 
-class FbqTag extends TwigTag implements FbqTagInterface
+class FbqTag extends Tag implements FbqTagInterface
 {
+    private string $template = '@SetonoSyliusFacebookPlugin/Tag/event.html.twig';
+
     private string $method;
 
     private string $event;
@@ -17,8 +19,6 @@ class FbqTag extends TwigTag implements FbqTagInterface
 
     public function __construct(string $event, BuilderInterface $builder = null, string $method = 'track')
     {
-        parent::__construct('@SetonoSyliusFacebookPlugin/Tag/event.html.twig');
-
         $this->method = $method;
         $this->event = $event;
         $this->parameters = $builder;
@@ -38,5 +38,10 @@ class FbqTag extends TwigTag implements FbqTagInterface
         }
 
         return $ret;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->template;
     }
 }

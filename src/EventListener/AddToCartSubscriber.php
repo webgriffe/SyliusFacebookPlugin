@@ -10,7 +10,6 @@ use Setono\SyliusFacebookPlugin\Context\PixelContextInterface;
 use Setono\SyliusFacebookPlugin\Event\BuilderEvent;
 use Setono\SyliusFacebookPlugin\Tag\FbqTag;
 use Setono\SyliusFacebookPlugin\Tag\FbqTagInterface;
-use Setono\SyliusFacebookPlugin\Tag\Tags;
 use Setono\TagBag\Tag\TagInterface;
 use Setono\TagBag\TagBagInterface;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -18,6 +17,7 @@ use Sylius\Component\Order\Context\CartContextInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Webmozart\Assert\Assert;
 
 final class AddToCartSubscriber extends TagSubscriber
 {
@@ -57,9 +57,11 @@ final class AddToCartSubscriber extends TagSubscriber
             return;
         }
 
+        $value = $this->moneyFormatter->format($order->getTotal());
+        Assert::float($value);
         $builder = AddToCartBuilder::create()
-            ->setCurrency($order->getCurrencyCode())
-            ->setValue($this->moneyFormatter->format($order->getTotal()))
+            ->setCurrency((string) $order->getCurrencyCode())
+            ->setValue($value)
             ->setContentType(AddToCartBuilder::CONTENT_TYPE_PRODUCT)
         ;
 
@@ -71,10 +73,12 @@ final class AddToCartSubscriber extends TagSubscriber
 
             $builder->addContentId($variant->getCode());
 
+            $itemPrice = $this->moneyFormatter->format($item->getDiscountedUnitPrice());
+            Assert::float($itemPrice);
             $contentBuilder = ContentBuilder::create()
                 ->setId($variant->getCode())
                 ->setQuantity($item->getQuantity())
-                ->setItemPrice($this->moneyFormatter->format($item->getDiscountedUnitPrice()))
+                ->setItemPrice($itemPrice)
             ;
 
             $this->eventDispatcher->dispatch(new BuilderEvent($contentBuilder, $item));
@@ -84,10 +88,9 @@ final class AddToCartSubscriber extends TagSubscriber
 
         $this->eventDispatcher->dispatch(new BuilderEvent($builder, $order));
 
-        $this->tagBag->addTag(
+        $this->tagBag->add(
             (new FbqTag(FbqTagInterface::EVENT_ADD_TO_CART, $builder))
-                ->setSection(TagInterface::SECTION_BODY_END)
-                ->setName(Tags::TAG_ADD_TO_CART)
+                ->withSection(TagInterface::SECTION_BODY_END)
         );
     }
 }

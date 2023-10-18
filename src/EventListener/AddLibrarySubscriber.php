@@ -6,6 +6,7 @@ namespace Setono\SyliusFacebookPlugin\EventListener;
 
 use Setono\SyliusFacebookPlugin\Tag\Tags;
 use Setono\TagBag\Tag\TagInterface;
+use Setono\TagBag\Tag\TemplateTag;
 use Setono\TagBag\Tag\TwigTag;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -25,7 +26,7 @@ final class AddLibrarySubscriber extends TagSubscriber
     {
         $request = $event->getRequest();
 
-        if (!$event->isMasterRequest() || !$this->isShopContext($request)) {
+        if (!$event->isMainRequest() || !$this->isShopContext($request)) {
             return;
         }
 
@@ -38,12 +39,10 @@ final class AddLibrarySubscriber extends TagSubscriber
             return;
         }
 
-        $this->tagBag->addTag(
-            (new TwigTag('@SetonoSyliusFacebookPlugin/Tag/library.html.twig', [
+        $this->tagBag->add(
+            TemplateTag::create('@SetonoSyliusFacebookPlugin/Tag/library.html.twig', [
                 'pixels' => $this->getPixels(),
-            ]))
-                ->setSection(TagInterface::SECTION_HEAD)
-                ->setName(Tags::TAG_LIBRARY)
+            ])->withSection(TagInterface::SECTION_HEAD)
         );
     }
 }

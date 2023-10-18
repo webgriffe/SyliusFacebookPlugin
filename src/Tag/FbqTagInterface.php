@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Setono\SyliusFacebookPlugin\Tag;
 
-use Setono\TagBag\Tag\TwigTagInterface;
+use Setono\TagBag\Tag\TagInterface;
 
-interface FbqTagInterface extends TwigTagInterface
+interface FbqTagInterface extends TagInterface
 {
     public const EVENT_ADD_TO_CART = 'AddToCart';
 

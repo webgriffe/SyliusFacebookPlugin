@@ -20,6 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Webmozart\Assert\Assert;
 
 final class PurchaseSubscriber extends TagSubscriber
 {
@@ -49,7 +50,7 @@ final class PurchaseSubscriber extends TagSubscriber
     {
         $request = $event->getRequest();
 
-        if (!$event->isMasterRequest() || !$this->isShopContext($request)) {
+        if (!$event->isMainRequest() || !$this->isShopContext($request)) {
             return;
         }
 
@@ -81,9 +82,12 @@ final class PurchaseSubscriber extends TagSubscriber
             return;
         }
 
+        $value = $this->moneyFormatter->format($order->getTotal());
+        Assert::float($value);
+
         $builder = PurchaseBuilder::create()
-            ->setValue($this->moneyFormatter->format($order->getTotal()))
-            ->setCurrency($order->getCurrencyCode())
+            ->setValue($value)
+            ->setCurrency((string) $order->getCurrencyCode())
             ->setContentType(PurchaseBuilder::CONTENT_TYPE_PRODUCT)
         ;
 
@@ -107,10 +111,9 @@ final class PurchaseSubscriber extends TagSubscriber
 
         $this->eventDispatcher->dispatch(new BuilderEvent($builder, $order));
 
-        $this->tagBag->addTag(
+        $this->tagBag->add(
             (new FbqTag(FbqTagInterface::EVENT_PURCHASE, $builder))
-                ->setSection(TagInterface::SECTION_BODY_END)
-                ->setName(Tags::TAG_PURCHASE)
+                ->withSection(TagInterface::SECTION_BODY_END)
         );
     }
 }
