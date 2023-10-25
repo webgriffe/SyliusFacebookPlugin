@@ -41,4 +41,18 @@ interface FbqTagInterface extends TagInterface
     public const EVENT_SUBSCRIBE = 'Subscribe';
 
     public const EVENT_VIEW_CONTENT = 'ViewContent';
+
+    /**
+     * Returns the template type. For example a twig template would return 'twig'
+     * This is helpful when creating renderers that should support generic tags. At runtime these tags
+     * can return the correct template type and subsequently be rendered by the correct renderer
+     */
+    public function getTemplateType(): string;
+
+    public function getTemplate(): string;
+
+    /**
+     * Returns the data to inject into the template
+     */
+    public function getParameters(): array;
 }

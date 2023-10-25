@@ -11,17 +11,11 @@ class FbqTag extends Tag implements FbqTagInterface
 {
     private string $template = '@SetonoSyliusFacebookPlugin/Tag/event.html.twig';
 
-    private string $method;
-
-    private string $event;
-
-    private ?BuilderInterface $parameters = null;
-
-    public function __construct(string $event, BuilderInterface $builder = null, string $method = 'track')
-    {
-        $this->method = $method;
-        $this->event = $event;
-        $this->parameters = $builder;
+    public function __construct(
+        private string $event,
+        private ?BuilderInterface $parameters = null,
+        private string $method = 'track',
+    ) {
     }
 
     public function getContext(): array
@@ -29,7 +23,7 @@ class FbqTag extends Tag implements FbqTagInterface
         return $this->getParameters();
     }
 
-    protected function getParameters(): array
+    public function getParameters(): array
     {
         $ret = ['method' => $this->method, 'event' => $this->event];
 
@@ -43,5 +37,10 @@ class FbqTag extends Tag implements FbqTagInterface
     public function getTemplate(): string
     {
         return $this->template;
+    }
+
+    public function getTemplateType(): string
+    {
+        return strtolower(pathinfo($this->template, PATHINFO_EXTENSION));
     }
 }
